@@ -16,6 +16,8 @@ builder.Services.AddDbContext<MeuDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddIdentityConfig(builder.Configuration);
+
 builder.Services.AddAutoMapper(cfg => { }, typeof(AutoMapperConfig).Assembly);
 
 builder.Services.AddApiConfig();
@@ -32,6 +34,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseApiConfig(app.Environment);
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

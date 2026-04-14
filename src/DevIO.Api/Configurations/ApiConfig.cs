@@ -27,15 +27,13 @@ namespace DevIO.Api.Configurations
 
         public static IApplicationBuilder UseApiConfig(this IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseStaticFiles();
+
             app.UseRouting();
 
             app.UseCors("AllowAngular");
 
             app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-            
 
             return app;
         }
