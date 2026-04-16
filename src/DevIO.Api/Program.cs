@@ -1,14 +1,13 @@
 using DevIO.Api.Configurations;
+using DevIO.Api.Extensions;
 using DevIO.Data.Context;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<MeuDbContext>(options =>
@@ -22,15 +21,27 @@ builder.Services.AddAutoMapper(cfg => { }, typeof(AutoMapperConfig).Assembly);
 
 builder.Services.AddApiConfig();
 
+builder.Services.AddHealthChecks()
+    .AddCheck("Produtos", new SqlServerHealthCheck(builder.Configuration.GetConnectionString("DefaultConnection")))
+    .AddSqlServer(
+        connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
+        name: "SqlServer",
+        tags: new[] { "db", "sqlserver" }
+    );
+
 builder.Services.ResolveDependencies();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseHsts();
 }
 
 app.UseApiConfig(app.Environment);
@@ -39,5 +50,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHealthChecks("/api/hc", new HealthCheckOptions
+{
+    Predicate = _ => true,
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();

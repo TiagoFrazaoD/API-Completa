@@ -3,7 +3,7 @@ using DevIO.Business.Notificacoes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace DevIO.Api.Controllers
+namespace DevIO.Api.Controller
 {
     [ApiController]
     public abstract class MainController : ControllerBase

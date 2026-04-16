@@ -1,14 +1,16 @@
 ﻿using AutoMapper;
+using DevIO.Api.Controller;
 using DevIO.Api.ViewModels;
 using DevIO.Business.Intefaces;
 using DevIO.Business.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
 
-namespace DevIO.Api.Controllers
+namespace DevIO.Api.V1.Controllers
 {
     [ApiController]
-    [Route("api/v1/produtos")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/produtos")]
     public class ProdutosController : MainController
     {
         IProdutoRepository _produtoRepository;
